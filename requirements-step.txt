@@ -1,6 +1,0 @@
-# STEP file extraction (cadquery + OpenCASCADE geometry kernel).
-# Not installed on Streamlit Cloud — the cloud build doesn't have wheels for
-# the hosted Python version. Install locally for STEP support.
-#
-# Local install:  pip install -r requirements.txt -r requirements-step.txt
-cadquery>=2.4.0

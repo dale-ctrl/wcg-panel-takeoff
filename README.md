@@ -9,11 +9,9 @@ Extracts panel schedules from SolidWorks STEP files **or WCG supplier-drawing PD
 1. Install Python 3.10+ from https://www.python.org/downloads/ (tick "Add to PATH")
 2. Open Command Prompt in this folder and run:
    ```
-   pip install -r requirements.txt -r requirements-step.txt
+   pip install -r requirements.txt
    ```
-   The second file installs `cadquery` (~200MB, includes the OpenCASCADE
-   geometry kernel) for STEP-file support. PDF and Manual flows only need
-   `requirements.txt`.
+   Note: `cadquery` is ~200MB as it includes the OpenCASCADE geometry kernel.
 3. Double-click **Launch Panel Takeoff.bat**
 
 ### Daily use
@@ -103,14 +101,19 @@ to [Streamlit Community Cloud](https://share.streamlit.io/):
 3. Pick this repo (`dale-ctrl/wcg-panel-takeoff`), branch `main`, main file `app.py`
 4. Click **Deploy**
 
-The build only installs the PDF/Manual deps (Streamlit, pdfplumber, pandas,
-openpyxl, numpy) — ~30 seconds. STEP support is **deliberately excluded**
-from the cloud build because `cadquery-ocp` doesn't publish wheels for
-every Python version Streamlit Cloud uses, and is also a heavy dep that
-slows builds. The STEP tab on the hosted app shows a friendly warning; PDF
-and Manual continue working normally.
+**Important:** in step 3, click **Advanced settings** before deploying and
+set **Python version** to **3.12**. The default (3.14 at time of writing)
+doesn't have `cadquery-ocp` wheels — the build will fail. `.python-version`
+and `runtime.txt` are in the repo as belt-and-braces but only the dropdown
+takes effect on first-deploy.
 
-For STEP support, run the tool locally (see Quick Start above).
+The first build takes ~5 minutes (cadquery is ~200MB). `packages.txt`
+installs the Linux system libraries cadquery needs (libGL, libEGL, etc.).
+
+If `cadquery` ever fails to install, the app still boots — the STEP tab
+shows a warning and the **PDF Upload** and **Manual Entry** tabs continue
+to work. The cadquery import is lazy so a build failure for it won't break
+the whole app.
 
 ### Updating the deployed app
 

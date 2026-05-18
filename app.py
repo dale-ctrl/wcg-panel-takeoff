@@ -14,7 +14,13 @@ v2 improvements:
 """
 
 import streamlit as st
-import cadquery as cq
+try:
+    import cadquery as cq
+    CADQUERY_AVAILABLE = True
+except Exception as _cq_err:
+    cq = None
+    CADQUERY_AVAILABLE = False
+    _CADQUERY_ERROR = str(_cq_err)
 import pandas as pd
 import numpy as np
 import pdfplumber
@@ -64,6 +70,11 @@ VOLUME_RATIO_WARN = 0.85
 
 
 def extract_bodies_from_step(file_bytes, filename):
+    if not CADQUERY_AVAILABLE:
+        raise RuntimeError(
+            "STEP extraction needs cadquery, which failed to load in this environment "
+            f"({_CADQUERY_ERROR}). Use the PDF tab or Manual Entry instead."
+        )
     with tempfile.NamedTemporaryFile(suffix=".STEP", delete=False) as tmp:
         tmp.write(file_bytes)
         tmp_path = tmp.name
@@ -746,7 +757,7 @@ def build_smart_space_xlsx(project_settings, panel_groups):
 
 def main():
     st.title("\U0001fab5 WCG Panel Takeoff")
-    st.caption("Extract panel schedules from SolidWorks STEP files -> Smart Space supplier template")
+    st.caption("Extract panel schedules from SolidWorks STEP files or WCG supplier-drawing PDFs -> Smart Space supplier template")
 
     with st.sidebar:
         st.header("Project Settings")
@@ -802,8 +813,14 @@ def main():
     tab_step, tab_pdf, tab_manual = st.tabs(["STEP File Upload", "PDF Upload", "Manual Entry"])
 
     with tab_step:
+        if not CADQUERY_AVAILABLE:
+            st.warning(
+                "STEP extraction is unavailable in this environment because **cadquery** "
+                "did not load. Use the **PDF Upload** or **Manual Entry** tabs instead.\n\n"
+                f"Details: `{_CADQUERY_ERROR}`"
+            )
         uploaded_files = st.file_uploader("Upload STEP files", type=["step","stp"], accept_multiple_files=True)
-        if uploaded_files and st.button("Extract Panels", type="primary"):
+        if uploaded_files and CADQUERY_AVAILABLE and st.button("Extract Panels", type="primary"):
             all_groups = {}; total_hw = 0
             progress = st.progress(0, text="Parsing...")
             for i, uf in enumerate(uploaded_files):

@@ -91,6 +91,28 @@ per the edging code: L deducts from length edges, LLWW deducts from all four.
 - SolidWorks STEP files exported as AP214 (File → Save As → STEP AP214)
 - Models oriented consistently (cabinets upright, backs against a consistent axis)
 
+## Deploying to Streamlit Cloud (hosted access)
+
+To run the tool as a hosted web app — no local install for end users — deploy
+to [Streamlit Community Cloud](https://share.streamlit.io/):
+
+1. Sign in to share.streamlit.io with your GitHub account
+2. Click **New app**
+3. Pick this repo (`dale-ctrl/wcg-panel-takeoff`), branch `main`, main file `app.py`
+4. Click **Deploy**
+
+The first build takes ~5 minutes (cadquery is large). `packages.txt` installs
+the Linux system libraries cadquery needs (libGL etc.).
+
+If cadquery fails to install on the cloud, the app still boots — the STEP tab
+shows a warning and the **PDF Upload** and **Manual Entry** tabs continue to
+work. The cadquery import is lazy so a build failure for it won't break the
+whole app.
+
+### Updating the deployed app
+
+Push to `main` and Streamlit Cloud auto-redeploys within a minute.
+
 ## Troubleshooting
 
 - **Browser doesn't open**: Navigate to http://localhost:8501

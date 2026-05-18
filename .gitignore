@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Windows shortcuts (user-specific, regenerate locally)
+*.lnk
+
+# Local test data (PDFs/STEPs you don't want in the repo)
+test_pdfs/
+test_step/
+*.tmp.pdf
+
+# Build artifacts
+build/
+dist/
